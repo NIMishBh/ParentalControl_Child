@@ -8,11 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.parentalcontrol_child.models.parents;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     String found="false";
     String parent_name,memail;
+    String pemail,ppass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 memail = e1.getText().toString();
                 parentRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
                         for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             DatabaseReference ref = parentRef.child(snapshot.getKey());
@@ -59,12 +59,17 @@ public class MainActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
 
                                     String child_email = dataSnapshot1.child("childEmail").getValue().toString();
-                                    Toast.makeText(getApplicationContext(),"entered mail : "+memail,Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getApplicationContext(),"entered mail : "+memail,Toast.LENGTH_SHORT).show();
                                     if(child_email.equals(memail)){
                                             found = "true";
                                             parent_name = dataSnapshot1.child("name").getValue().toString();
-                                            Toast.makeText(getApplicationContext(),"Parents name : "+parent_name,Toast.LENGTH_SHORT).show();
-                                            Intent i = new Intent(getApplicationContext(),WelcomeActivity.class);
+                                            pemail = dataSnapshot1.child("email").getValue().toString();
+                                            ppass = dataSnapshot1.child("pass").getValue().toString();
+//                                            Toast.makeText(getApplicationContext(),"Parents email : "+pemail,Toast.LENGTH_SHORT).show();
+//                                            Toast.makeText(getApplicationContext(),"Parents email : "+ppass,Toast.LENGTH_SHORT).show();
+                                            Intent i = new Intent(getApplicationContext(), Menu.class);
+                                            i.putExtra("pemail", pemail);
+                                            i.putExtra("ppass", ppass);
                                             startActivity(i);
                                             finish();
                                     }
@@ -98,4 +103,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    /*@Override
+    public void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser != null) {
+
+            Intent i = new Intent(MainActivity.this, Menu.class);
+            startActivity(i);
+            finish();
+
+        }
+
+    }*/
 }

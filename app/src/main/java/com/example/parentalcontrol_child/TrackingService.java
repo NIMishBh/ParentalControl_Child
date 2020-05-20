@@ -15,7 +15,10 @@ import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -35,20 +38,41 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class TrackingService extends Service {
     private static final String TAG = TrackingService.class.getSimpleName();
+    String mail,pass;
+    FirebaseAuth mauth;
 
     public TrackingService() {
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+   @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        mail= intent.getStringExtra("pemail");
+        pass= intent.getStringExtra("ppass");
+
+//        Toast.makeText(getApplicationContext(),"Parents email : "+mail,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),"Parents email : "+pass,Toast.LENGTH_LONG).show();
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+           buildNotification();
+       }
+       loginToFirebase();
+
+       return START_STICKY;
     }
 
+
+    @Override
+    public IBinder onBind(Intent intent) {return null;}
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
         super.onCreate();
+        mauth=FirebaseAuth.getInstance();
+       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             buildNotification();
-            loginToFirebase();
+        }
+        loginToFirebase();*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -85,32 +109,35 @@ public class TrackingService extends Service {
     };
     private void loginToFirebase() {
 
-        String email = getString(R.string.test_email);
-        String password = getString(R.string.test_password);
 
-//Call OnCompleteListener if the user is signed in successfully//
+        String email = mail;
+        String password = pass;
+        Toast.makeText(getApplicationContext(),email,Toast.LENGTH_LONG).show();
+        requestLocationUpdates();
 
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        //Call OnCompleteListener if the user is signed in successfully//
+
+        mauth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onComplete(Task<AuthResult> task) {
-
-                if (task.isSuccessful()) {
-
-                    requestLocationUpdates();
-                } else {
-
-                    Log.d(TAG, "Firebase authentication failed");
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful())
+                {
+                    //Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
     private void requestLocationUpdates(){
+        //Toast.makeText(getApplicationContext(),"inside requestloc",Toast.LENGTH_LONG).show();
         LocationRequest request = new LocationRequest();
-        request.setInterval(10000);
+        request.setInterval(1000);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
-        final String path = getString(R.string.firebase_path);
+        //final String path = getString(R.string.firebase_path);
         int permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permission== PackageManager.PERMISSION_GRANTED)
@@ -119,13 +146,25 @@ public class TrackingService extends Service {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
 
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference(path);
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myref = database.getReference("parents");
                     Location location = locationResult.getLastLocation();
                     if (location != null) {
-                        ref.setValue(location);
+                        String loc= location.toString();
+                        myref.child(mauth.getCurrentUser().getUid()).child("Location").setValue(location);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"Error While getting the Location, Try Again!",Toast.LENGTH_LONG).show();
                     }
                 }
             },null);
         }
     }
+//    @Override
+//    public void onTaskRemoved(Intent rootIntent) {
+//        Intent restartServiceIntent = new Intent(getApplicationContext(),this.getClass());
+//        restartServiceIntent.setPackage(getPackageName());
+//        startService(restartServiceIntent);
+//        super.onTaskRemoved(rootIntent);
+//    }
 }

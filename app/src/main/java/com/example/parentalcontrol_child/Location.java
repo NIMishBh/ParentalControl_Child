@@ -14,14 +14,21 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class Location extends AppCompatActivity {
     TextView t;
+    String mail,pass;
     public static final int PERMISSIONS_REQUEST=100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         t = findViewById(R.id.textView);
+
+        Intent intent = getIntent();
+
+        mail = intent.getStringExtra("pemail");
+        pass = intent.getStringExtra("ppass");
+
         LocationManager lm=(LocationManager) getSystemService(LOCATION_SERVICE);
         if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
         {
@@ -53,7 +60,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void startTrackerService() {
 
-        startService(new Intent(this,TrackingService.class));
+        Intent i = new Intent(this,TrackingService.class);
+        i.putExtra("pemail", mail);
+        i.putExtra("ppass", pass);
+        startService(i);
         Toast.makeText(this, "GPS tracking enabled", Toast.LENGTH_SHORT).show();
         finish();
     }
