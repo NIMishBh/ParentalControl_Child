@@ -112,7 +112,7 @@ public class TrackingService extends Service {
 
         String email = mail;
         String password = pass;
-        Toast.makeText(getApplicationContext(),email,Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),email,Toast.LENGTH_LONG).show();
         requestLocationUpdates();
 
         //Call OnCompleteListener if the user is signed in successfully//

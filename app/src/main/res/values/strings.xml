@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ParentalControl_Child</string>
     <string name="tracking_enabled_notif">Tracking is currently enabled. Tap to cancel.</string>
+    <string name="callpar">Your Parent Wants you to call them ASAP!!</string>
 </resources>

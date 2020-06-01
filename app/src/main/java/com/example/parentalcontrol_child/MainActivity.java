@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         e1=findViewById(R.id.editText);
         b1=findViewById(R.id.button);
         mAuth = FirebaseAuth.getInstance();
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                                     String child_email = dataSnapshot1.child("childEmail").getValue().toString();
                                     //Toast.makeText(getApplicationContext(),"entered mail : "+memail,Toast.LENGTH_SHORT).show();
                                     if(child_email.equals(memail)){
-                                            found = "true";
+                                            found    = "true";
                                             parent_name = dataSnapshot1.child("name").getValue().toString();
                                             pemail = dataSnapshot1.child("email").getValue().toString();
                                             ppass = dataSnapshot1.child("pass").getValue().toString();
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                                             finish();
                                     }
                                     else{
-                                        Toast.makeText(getApplicationContext(),"Child not registered!",Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getApplicationContext(),"Child not registered!",Toast.LENGTH_SHORT).show();
                                     }
 
                                 }
