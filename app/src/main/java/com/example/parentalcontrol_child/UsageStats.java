@@ -3,6 +3,7 @@ package com.example.parentalcontrol_child;
 import android.app.Service;
 import android.app.usage.UsageStatsManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.widget.Toast;
 
@@ -20,6 +21,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.example.parentalcontrol_child.Menu.fb_count;
+import static com.example.parentalcontrol_child.Menu.ig_count;
+import static com.example.parentalcontrol_child.Menu.wp_count;
+
 public class UsageStats extends Service {
     public UsageStats() {
     }
@@ -28,17 +33,12 @@ public class UsageStats extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference parentRef = database.getReference("parents");
-    StorageReference storageReference;
-    FirebaseAuth mauth;
-    String wpcount;
-    String fbcount;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mauth=FirebaseAuth.getInstance();
-        Toast.makeText(getApplicationContext(),"Serv STarted",Toast.LENGTH_SHORT).show();
+        sharedPreferences = getSharedPreferences("App Duration",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         TimerTask detectApp = new TimerTask() {
             @Override
             public void run() {
@@ -49,63 +49,24 @@ public class UsageStats extends Service {
                 if(usageStats!=null)
                 {
                     for(final android.app.usage.UsageStats usageStat : usageStats){
-                        if(usageStat.getPackageName().toLowerCase().contains("com.whaatsapp")){
+                        if(usageStat.getPackageName().toLowerCase().contains("com.whatsapp")){
 
-                            parentRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        String uid = snapshot.getKey();
-                                        DatabaseReference ref = database.getReference("parents");
-                                        Toast.makeText(getApplicationContext(),uid,Toast.LENGTH_SHORT);
-                                        long wp = usageStat.getTotalTimeInForeground();
-                                        long sec = (wp/1000)%60;
-                                        long min = (wp/(1000*60))%60;
-                                        long hr = (wp/(1000*60*60));
-                                        wpcount = hr + " hr " + min + " min " + sec + " secs ";
-                                        ref.child(uid).child("AppUsage").child("WhatsApp").setValue(wpcount);
+                           editor.putLong(wp_count,usageStat.getTotalTimeInForeground());
+                        }
+                        if(usageStat.getPackageName().toLowerCase().contains("com.facebook.lite")){
 
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
+                            editor.putLong(fb_count,usageStat.getTotalTimeInForeground());
 
                         }
-                        if(usageStat.getPackageName().toLowerCase().contains("com.whaatsapp")){
+                        if(usageStat.getPackageName().toLowerCase().contains("com.instagram.android")){
 
-                            parentRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        String uid = snapshot.getKey();
-                                        DatabaseReference ref = database.getReference("parents");
-                                        Toast.makeText(getApplicationContext(),uid,Toast.LENGTH_SHORT);
-                                        long fb = usageStat.getTotalTimeInForeground();
-                                        long sec = (fb/1000)%60;
-                                        long min = (fb/(1000*60))%60;
-                                        long hr = (fb/(1000*60*60));
-                                        fbcount = hr + " hr " + min + " min " + sec + " secs ";
-                                        ref.child(uid).child("AppUsage").child("Facebook").setValue(fbcount);
-
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
+                            editor.putLong(ig_count,usageStat.getTotalTimeInForeground());
                         }
+                        editor.apply();
                     }
                 }
             }
         };
-        Toast.makeText(getApplicationContext(),fbcount,Toast.LENGTH_SHORT).show();
         Timer detectAppTimer = new Timer();
         detectAppTimer.scheduleAtFixedRate(detectApp,0,1000);
         return  super.onStartCommand(intent,flags,startId);

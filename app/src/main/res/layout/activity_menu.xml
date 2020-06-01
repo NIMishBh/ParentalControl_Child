@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:layout_marginBottom="40dp"
         android:fontFamily="sans-serif-black"
         android:text="Hey There!"
@@ -29,7 +29,7 @@
         android:layout_gravity="left"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="30dp"
         android:fontFamily="sans-serif-black"
         android:text="Here are all your settings."
         android:textColor="@color/colorWhite"
@@ -52,4 +52,85 @@
         android:text="Your Location"
         android:textColor="@android:color/white"
         android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="sans-serif-black"
+        android:text="This is how Much you have used these apps today:"
+        android:textColor="@color/colorWhite"
+        android:textSize="30dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="0dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Facebook:"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Facebook"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp"
+        android:id="@+id/fb_time"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:fontFamily="sans-serif-black"
+        android:text="WhatsApp:"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-black"
+        android:text="WhatsApp"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp"
+        android:id="@+id/wp_time"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Instagram:"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Instagram"
+        android:textColor="@color/colorWhite"
+        android:textSize="20dp"
+        android:id="@+id/ig_time"/>
 </LinearLayout>
